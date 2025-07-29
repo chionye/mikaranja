@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 21, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/auth.ts"],"sourcesContent":["import NextAuth from \"next-auth\"\nimport Google from \"next-auth/providers/google\"\n \nexport const { handlers, auth, signIn, signOut } = NextAuth({\n  providers: [Google],\n})"],"names":[],"mappings":";;;;;;AAAA;AAAA;AACA;AAAA;;;AAEO,MAAM,EAAE,QAAQ,EAAE,IAAI,EAAE,MAAM,EAAE,OAAO,EAAE,GAAG,CAAA,GAAA,6JAAA,CAAA,UAAQ,AAAD,EAAE;IAC1D,WAAW;QAAC,6JAAA,CAAA,UAAM;KAAC;AACrB"}},
-    {"offset": {"line": 42, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/middleware.ts"],"sourcesContent":["export { auth as middleware } from \"@/auth\""],"names":[],"mappings":";AAAA"}}]
-}
