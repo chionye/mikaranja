@@ -1,103 +1,126 @@
-import Image from "next/image";
+/** @format */
 
-export default function Home() {
+// app/login/page.tsx
+"use client"; // This page uses client-side hooks
+
+import React, { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { loginSchema } from "@/utils/schema"; // Assuming this path is correct
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod"; // Use * as z for Zod
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { LucideEye, LucideEyeClosed } from "lucide-react";
+
+const LoginPage = () => {
+  const [toggleShowPassword, setToggleShowPassword] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const { login, isLoading } = useAuth();
+  const router = useRouter();
+
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+      expiresInMins: 30,
+    },
+  });
+
+  // 2. Define a single onSubmit handler for react-hook-form.
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    setLoginError(null); // Clear previous errors on new submission
+    console.log("Form values submitted:", values);
+
+    const result = await login(values.username, values.password); // Get the result object
+
+    if (result.success) {
+      router.push("/tasks");
+    } else {
+      setLoginError(result.error); // Set the error message if login failed
+    }
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <div className='min-h-screen flex items-center justify-center bg-white'>
+      <div className='border-[0.5] shadow border-black px-5 py-10 lg:w-1/3 sm:w-full'>
+        <p className='text-center my-2 text-lg font-semibold'>Welcome Back</p>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-2'>
+            {loginError && (
+              <p className='text-red-500 text-center text-sm mb-2'>
+                {loginError}
+              </p>
+            )}
+            <FormField
+              control={form.control}
+              name='username'
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder='Enter username'
+                      type='text'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <FormField
+              control={form.control}
+              name='password'
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className='relative w-full'>
+                      <Input
+                        placeholder='Enter password'
+                        type={toggleShowPassword ? "text" : "password"}
+                        className='pr-10'
+                        {...field}
+                      />
+                      <Button
+                        variant='ghost'
+                        type='button'
+                        className='absolute right-0 top-0 h-full px-3'
+                        onClick={() => setToggleShowPassword((prev) => !prev)}>
+                        {toggleShowPassword ? (
+                          <LucideEyeClosed />
+                        ) : (
+                          <LucideEye />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className='flex justify-center'>
+              <Button
+                type='submit'
+                className='cursor-pointer'
+                disabled={isLoading}>
+                {isLoading ? "Loading..." : "Login"}{" "}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
-}
+};
+
+export default LoginPage;

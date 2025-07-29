@@ -1,0 +1,32 @@
+{
+  "pages": {
+    "/(protected)/tasks/page": [
+      "static/chunks/node_modules_next_dist_01fcdebf._.js",
+      "static/chunks/app_favicon_ico_mjs_c5600bb8._.js",
+      "static/chunks/[root-of-the-server]__9d126714._.css",
+      "static/chunks/node_modules_624b0460._.js",
+      "static/chunks/_83706239._.js",
+      "static/chunks/app_layout_tsx_68b267f5._.js",
+      "static/chunks/node_modules_next_dist_client_components_builtin_global-error_fea4bd47.js",
+      "static/chunks/_501e5ca8._.js",
+      "static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_b854acb4._.js",
+      "static/chunks/node_modules_zod_ea3d89f3._.js",
+      "static/chunks/node_modules_react-day-picker_dist_esm_ed252dcd._.js",
+      "static/chunks/node_modules_date-fns_3fb1bb55._.js",
+      "static/chunks/node_modules_@tanstack_query-core_build_modern_bf44651b._.js",
+      "static/chunks/node_modules_3f76aff1._.js",
+      "static/chunks/app_(protected)_layout_tsx_fea4bd47._.js",
+      "static/chunks/_e8443ff7._.js",
+      "static/chunks/app_(protected)_tasks_page_tsx_87a69542._.js",
+      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_6aaa83c7._.js",
+      "static/chunks/node_modules_next_dist_compiled_react-dom_1f56dc06._.js",
+      "static/chunks/node_modules_next_dist_compiled_next-devtools_index_d575f738.js",
+      "static/chunks/node_modules_next_dist_compiled_0f1b9fd4._.js",
+      "static/chunks/node_modules_next_dist_client_20b209c9._.js",
+      "static/chunks/node_modules_next_dist_445d8acf._.js",
+      "static/chunks/node_modules_@swc_helpers_cjs_8e433861._.js",
+      "static/chunks/_e69f0d32._.js",
+      "static/chunks/_01f48b92._.js"
+    ]
+  }
+}
