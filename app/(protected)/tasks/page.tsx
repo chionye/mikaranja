@@ -1,4 +1,3 @@
-/** @format */
 
 "use client";
 
@@ -83,7 +82,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/login");
+      router.push("/");
       return;
     }
 
