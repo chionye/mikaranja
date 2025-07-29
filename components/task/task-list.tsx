@@ -1,4 +1,3 @@
-/** @format */
 
 import React from "react";
 import { Label } from "@radix-ui/react-label";
@@ -13,6 +12,21 @@ const TaskList = (todo: TaskListProps) => {
   const { addOrUpdateTask } = useTaskContext();
 
   const handleCheckboxChange = async (newCompletedStatus: boolean) => {
+    const updatedTaskLocally: TaskListProps = {
+      ...todo,
+      completed: newCompletedStatus,
+    };
+
+    addOrUpdateTask(updatedTaskLocally);
+    const isPotentiallyApiTask = todo.id <= 200;
+
+    if (!isPotentiallyApiTask) {
+      console.log(
+        "TaskList: Task has a local ID. Skipping API update for checkbox."
+      );
+      return;
+    }
+
     try {
       const response = await Requests.patchTodo(ApiRoutes.UpdateTodo(todo.id), {
         data: {
@@ -21,22 +35,28 @@ const TaskList = (todo: TaskListProps) => {
       });
 
       if (response.status === 200) {
-        console.log("Task updated successfully on API:", response.data);
+        console.log(
+          "TaskList: Task updated successfully on API:",
+          response.data
+        );
         addOrUpdateTask(response.data);
       } else {
         console.error(
-          `TaskList: Error during API call for update. Status: ${response.status}`,
+          `TaskList: API update failed for task ID ${todo.id}. Status: ${response.status}`,
           response.data
         );
       }
     } catch (error) {
-      console.error("TaskList: Error updating task:", error);
+      console.error(
+        `TaskList: Error during API patch for task ID ${todo.id}:`,
+        error
+      );
     }
   };
 
   return (
     <div
-      className='flex items-start justify-between border-b border-[#e6e6e6] py-2'
+      className='flex items-start justify-between border-b border-[#e6e6e6] py-2 w-full'
       key={todo.id}>
       <div className='flex gap-2'>
         <div>

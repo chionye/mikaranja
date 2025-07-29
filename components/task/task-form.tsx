@@ -19,8 +19,8 @@ import { useState } from "react";
 import { Requests } from "@/services/api";
 import ApiRoutes from "@/services/api/api-routes";
 import { useAuth } from "@/contexts/AuthContext";
-import { TaskFormProps, TaskListProps } from "@/types"; 
-import { useTaskContext } from "@/contexts/TaskContext"; 
+import { TaskFormProps, TaskListProps } from "@/types";
+import { useTaskContext } from "@/contexts/TaskContext";
 
 export function TaskForm({ initialData, onSuccess, onCancel }: TaskFormProps) {
   const { user } = useAuth();
@@ -47,73 +47,92 @@ export function TaskForm({ initialData, onSuccess, onCancel }: TaskFormProps) {
       return;
     }
 
+    let taskToUpdateLocally: TaskListProps; 
+
     try {
-      let response;
       if (isEditMode && initialData?.id) {
-        console.log(
-          "TaskForm: Sending PATCH request to update todo:",
-          initialData.id
-        );
-        response = await Requests.patchTodo(
-          ApiRoutes.UpdateTodo(initialData.id),
-          {
-            data: {
-              todo: values.todo,
-              completed: initialData.completed,
-            },
+        console.log("TaskForm: Handling edit for task ID:", initialData.id);
+        taskToUpdateLocally = {
+          ...initialData,
+          todo: values.todo,
+        };
+
+        try {
+          const response = await Requests.patchTodo(
+            ApiRoutes.UpdateTodo(initialData.id),
+            {
+              data: {
+                todo: values.todo,
+                completed: initialData.completed,
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            console.log(
+              "TaskForm: API update successful. Data:",
+              response.data
+            );
+            taskToUpdateLocally = response.data as TaskListProps;
+          } else {
+            console.warn(
+              "TaskForm: API update failed with status",
+              response.status,
+              ". Updating locally."
+            );
           }
-        );
-      } else {
-        console.log("TaskForm: Sending POST request to add new todo.");
-        response = await Requests.postTodo(ApiRoutes.CreateTodo, {
-          data: { todo: values.todo, completed: false, userId: user.id },
-        });
-      }
-
-      if (response.status === 200 || response.status === 201) {
-        form.reset();
-        console.log("TaskForm: API operation successful. Data from API:", response.data);
-        addOrUpdateTask(response.data as TaskListProps);
-
-        if (onSuccess) {
-          console.log("TaskForm: Calling onSuccess callback.");
-          onSuccess();
+        } catch (apiError) {
+          console.error(
+            "TaskForm: Error during API PATCH:",
+            apiError,
+            ". Updating locally."
+          );
+          setSubmitError("Failed to update task on server. Updated locally.");
         }
       } else {
-        setSubmitError(
-          `Failed to ${
-            isEditMode ? "update" : "add"
-          } task: Unexpected response status ${response.status}`
-        );
-        console.error(
-          "TaskForm: Unexpected API response status:",
-          response.status,
-          response.data
-        );
-      }
-    } catch (error: any) {
-      console.error(
-        `TaskForm: Error during API call for ${isEditMode ? "update" : "add"}:`,
-        error
-      );
-
-      if (!isEditMode && user?.id) {
-        const fallbackTask: TaskListProps = {
-          id: Math.floor(Math.random() * 1000000) + 20000,
+        taskToUpdateLocally = {
+          id: Date.now() + Math.floor(Math.random() * 10000),
           todo: values.todo,
           completed: false,
           userId: user.id,
         };
-        console.warn("TaskForm: Saving task locally due to API failure:", fallbackTask);
-        addOrUpdateTask(fallbackTask);
-        if (onSuccess) {
-          onSuccess();
+
+        try {
+          const response = await Requests.postTodo(ApiRoutes.CreateTodo, {
+            data: { todo: values.todo, completed: false, userId: user.id },
+          });
+
+          if (response.status === 201) {
+            console.log("TaskForm: API add successful. Data:", response.data);
+            taskToUpdateLocally = response.data as TaskListProps; 
+          } else {
+            console.warn(
+              "TaskForm: API add failed with status",
+              response.status,
+              ". Saving locally."
+            );
+            setSubmitError("Failed to add task to server. Saved locally.");
+          }
+        } catch (apiError) {
+          console.error(
+            "TaskForm: Error during API POST:",
+            apiError,
+            ". Saving locally."
+          );
+          setSubmitError("Failed to add task to server. Saved locally.");
         }
       }
 
+      addOrUpdateTask(taskToUpdateLocally);
+      form.reset(); 
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (finalError: any) {
+      console.error("TaskForm: Unexpected error in onSubmit:", finalError);
       setSubmitError(
-        error?.response?.data?.message ||
-          `Failed to ${isEditMode ? "update" : "add"} task. Please try again.`
+        finalError?.response?.data?.message ||
+          `An unexpected error occurred. Please try again.`
       );
     } finally {
       setIsSubmitting(false);
