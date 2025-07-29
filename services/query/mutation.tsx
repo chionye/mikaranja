@@ -1,7 +1,7 @@
 /** @format */
 
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
-import { Requests } from "../api"; // Assuming correct path
+import { Requests } from "../api";
 import { MutationPayload, MutationResponse, RequestsType } from "@/types";
 
 const Mutation = () => {

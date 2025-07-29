@@ -1,10 +1,7 @@
-/** @format */
 
 import { MenuItem } from "@/types";
 import { NavigationMenuItem, NavigationMenuLink } from "../ui/navigation-menu";
 import { SideMenuNextLink } from "./side-menu-next-link";
-import { Button } from "../ui/button";
-import { LucidePlus } from "lucide-react";
 
 interface Props {
   parent: MenuItem;

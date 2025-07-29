@@ -10,7 +10,7 @@ import { MakeRequestFunction } from "@/types";
 
 export const BaseURL = ApiRoutes.BASE_URL_DEV;
 
-// Create a single Axios instance
+// Axios instance
 export const API: AxiosInstance = axios.create({
   baseURL: BaseURL,
   headers: {

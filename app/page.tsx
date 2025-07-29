@@ -1,15 +1,14 @@
 /** @format */
 
-// app/login/page.tsx
-"use client"; // This page uses client-side hooks
+"use client"; 
 
 import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { loginSchema } from "@/utils/schema"; // Assuming this path is correct
+import { loginSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod"; // Use * as z for Zod
+import * as z from "zod"; 
 import {
   Form,
   FormControl,
@@ -27,7 +26,6 @@ const LoginPage = () => {
   const { login, isLoading } = useAuth();
   const router = useRouter();
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -37,17 +35,16 @@ const LoginPage = () => {
     },
   });
 
-  // 2. Define a single onSubmit handler for react-hook-form.
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    setLoginError(null); // Clear previous errors on new submission
+    setLoginError(null);
     console.log("Form values submitted:", values);
 
-    const result = await login(values.username, values.password); // Get the result object
+    const result = await login(values.username, values.password);
 
     if (result.success) {
       router.push("/tasks");
     } else {
-      setLoginError(result.error); // Set the error message if login failed
+      setLoginError(result.error);
     }
   }
 

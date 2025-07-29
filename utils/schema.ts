@@ -3,14 +3,10 @@
 import z from "zod";
 
 export const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Task Title must be at least 2 characters.",
+  todo: z.string().min(1, {
+    message: "You must enter a todo item.",
   }),
-  description: z.string().min(5, {
-    message: "Task is required.",
-  }),
-  dueDate: z.date().optional(),
-  priority: z.enum(["low", "medium", "high"]).optional(),
+  completed: z.boolean().default(false).optional(),
 });
 
 export const loginSchema = z.object({

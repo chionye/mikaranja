@@ -7,9 +7,9 @@ export default class ApiRoutes {
   static Login: string = "/auth/login";
 
   // Api route to fetch todo list
-  static FetchTodo: (limit: string, skip: string) => string = (
-    limit: string,
-    skip: string
+  static FetchTodo: (limit: number, skip: number) => string = (
+    limit: number,
+    skip: number
   ) => `/todos?limit=${limit}&skip=${skip}`;
 
   // Api route to fetch todo by id
@@ -20,5 +20,5 @@ export default class ApiRoutes {
   static CreateTodo: string = "/todos/add";
 
   // Api route to update or delete todo by ID
-  static UpdateTodo: (id: string) => string = (id: string) => `/todos/${id}`;
+  static UpdateTodo: (id: number) => string = (id: number) => `/todos/${id}`;
 }

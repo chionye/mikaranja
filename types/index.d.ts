@@ -19,12 +19,18 @@ export type MenuItem = {
 };
 
 export type TaskListProps = {
-  id: string | ZodUUID;
-  title: string;
-  description: string;
-  dueDate: string;
-  priority: string;
+  id?: number | z.ZodUUID;
+  todo: string;
+  completed: boolean;
+  userId: number;
 };
+
+interface DummyJsonTodo {
+  id: number;
+  todo: string;
+  completed: boolean;
+  userId: number;
+}
 
 export type RequestOptions = {
   data?: any;
@@ -111,6 +117,30 @@ export interface UserInfo {
 export interface AuthContextType {
   user: UserInfo | null;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<{ success: boolean; error: string | null }>;
+  login: (
+    username: string,
+    password: string
+  ) => Promise<{ success: boolean; error: string | null }>;
   logout: () => Promise<void>;
+}
+
+export interface DummyJsonTodosResponse {
+  todos: DummyJsonTodo[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
+export interface TaskFormProps {
+  initialData?: TaskListProps;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+export interface TaskContextType {
+  todos: TaskListProps[];
+  setTodos: React.Dispatch<React.SetStateAction<TaskListProps[]>>;
+  addOrUpdateTask: (task: TaskListProps) => void;
+  syncTodos: (apiTodos: TaskListProps[]) => void;
+  deleteTask: (id: number) => void;
 }

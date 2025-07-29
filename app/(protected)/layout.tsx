@@ -8,6 +8,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { TaskProvider } from "@/contexts/TaskContext";
 
 interface Props {
   children: ReactNode;
@@ -22,7 +23,7 @@ const queryClient = new QueryClient({
 });
 
 const persister = createAsyncStoragePersister({
-  storage: window.localStorage,
+  storage: typeof window !== "undefined" ? window.localStorage : undefined,
 });
 
 export default function ProtectedLayout({ children }: Props) {
@@ -31,11 +32,13 @@ export default function ProtectedLayout({ children }: Props) {
       client={queryClient}
       persistOptions={{ persister }}>
       <AuthProvider>
-        <div className='bg-blue-50 min-h-screen relative'>
-          <Header />
-          <SideMenu />
-          <main className='ml-56 mt-16'>{children}</main>
-        </div>
+        <TaskProvider>
+          <div className='bg-blue-50 min-h-screen relative'>
+            <Header />
+            <SideMenu />
+            <main className='ml-0 md:ml-56 mt-16'>{children}</main>
+          </div>
+        </TaskProvider>
       </AuthProvider>
     </PersistQueryClientProvider>
   );

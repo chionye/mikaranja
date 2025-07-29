@@ -11,7 +11,6 @@ type QueryResultData = AxiosResponse<any>;
 
 const Query = (queryParamsArray: QueryProps) => {
   const queries = useQueries({
-    // Map over the queryParamsArray to create individual query configurations
     queries: queryParamsArray.map((queryParam: QueryParam) => {
       return {
         queryKey: [queryParam.id, queryParam.url, queryParam.token],

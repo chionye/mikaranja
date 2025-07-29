@@ -10,7 +10,7 @@ import React, {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import ApiRoutes from "@/services/api/api-routes"; 
+import ApiRoutes from "@/services/api/api-routes";
 import { AuthContextType, LoginResult, UserInfo } from "@/types";
 import { setAuthToken } from "@/services/api/api-clients";
 import { Requests } from "@/services/api";
@@ -21,10 +21,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
-  // Initialize auth state from localStorage on app start
+
   useEffect(() => {
     const loadAuthState = () => {
-      // Only access localStorage in the browser environment
       if (typeof window !== "undefined") {
         try {
           const storedUser = localStorage.getItem("userInfo");
@@ -33,7 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (storedUser && storedToken) {
             const parsedUser: UserInfo = JSON.parse(storedUser);
             setUser(parsedUser);
-            setAuthToken(storedToken); // Set token in Axios interceptor
+            setAuthToken(storedToken);
           }
         } catch (error) {
           console.error("Failed to load auth state from storage:", error);
@@ -64,7 +63,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.status === 200 && data.accessToken) {
         const token = data.accessToken;
-        // Store user info and token, only in browser
         if (typeof window !== "undefined") {
           localStorage.setItem("userInfo", JSON.stringify(data));
           localStorage.setItem("userToken", token);
@@ -77,7 +75,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: "Unexpected API response." };
       }
     } catch (error: any) {
-     const errorMessage = error?.response?.data?.message ||   error?.message || "Invalid credentials. Please try again.";
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Invalid credentials. Please try again.";
       console.error("Login error:", error);
       return { success: false, error: errorMessage };
     } finally {
@@ -107,7 +108,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
