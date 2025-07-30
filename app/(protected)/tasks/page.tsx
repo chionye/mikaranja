@@ -91,13 +91,24 @@ export default function Page() {
     }
   }, [user, authLoading, currentPage, fetchTodos, router]);
 
+  const getStatus = (status: boolean): string => {
+    let result = "";
+    if(status){
+      result = "Completed";
+    }else{
+      result  = "Pending";
+    }
+    return result
+  }
+
   const filteredTodos = useMemo(() => {
     if (!searchTerm) {
       return todos;
     }
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return todos.filter((todo) =>
-      todo.todo.toLowerCase().includes(lowerCaseSearchTerm)
+      todo.todo.toLowerCase().includes(lowerCaseSearchTerm) ||
+      getStatus(todo.completed).toLowerCase().includes(lowerCaseSearchTerm)
     );
   }, [todos, searchTerm]);
 
